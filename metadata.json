@@ -1,0 +1,5 @@
+{
+  "name": "ShikshaGen - NCERT Lesson Generator",
+  "description": "An AI-powered educational content generator creating structured, CLT-based HTML lessons in Indian regional languages.",
+  "requestFramePermissions": []
+}
