@@ -228,8 +228,21 @@ const generateLessonViaAPI = async (params: LessonParams): Promise<GeneratedLess
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-      throw new Error(errorData.error || `API request failed with status ${response.status}`);
+      const errorData = await response.json().catch(() => ({ 
+        error: 'Unknown error',
+        details: `HTTP ${response.status}: ${response.statusText}`
+      }));
+      
+      // Provide more helpful error messages
+      let errorMessage = errorData.error || `API request failed with status ${response.status}`;
+      
+      if (response.status === 500 && errorData.error?.includes('API Key')) {
+        errorMessage = 'API Key not configured. Please set GEMINI_API_KEY in Vercel Environment Variables.';
+      } else if (errorData.details) {
+        errorMessage += ` - ${errorData.details}`;
+      }
+      
+      throw new Error(errorMessage);
     }
 
     const result = await response.json();

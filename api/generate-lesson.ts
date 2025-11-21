@@ -232,9 +232,27 @@ export default async function handler(
     
   } catch (error: any) {
     console.error("Gemini Generation Error:", error);
+    
+    // Provide more detailed error messages
+    let errorMessage = 'Failed to generate lesson';
+    let errorDetails = error.message || 'Unknown error';
+    
+    // Check for specific error types
+    if (error.message?.includes('API_KEY')) {
+      errorMessage = 'Invalid API Key. Please check your GEMINI_API_KEY in Vercel Environment Variables.';
+      errorDetails = 'The API key may be incorrect or expired.';
+    } else if (error.message?.includes('quota') || error.message?.includes('rate limit')) {
+      errorMessage = 'API quota exceeded or rate limit reached.';
+      errorDetails = 'Please try again later or check your Gemini API quota.';
+    } else if (error.message?.includes('permission')) {
+      errorMessage = 'API key does not have required permissions.';
+      errorDetails = 'Please verify your Gemini API key has the correct permissions.';
+    }
+    
     return res.status(500).json({ 
-      error: 'Failed to generate lesson', 
-      details: error.message 
+      error: errorMessage,
+      details: errorDetails,
+      fullError: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 }

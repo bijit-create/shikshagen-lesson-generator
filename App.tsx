@@ -26,7 +26,9 @@ const App: React.FC = () => {
       setViewMode(ViewMode.SPLIT); // Default to parallel view
       setCurrentPageIndex(0);
     } catch (err) {
-      setError("Failed to generate lesson content. Please check your API key or try again.");
+      const errorMessage = err instanceof Error ? err.message : "Failed to generate lesson content. Please check your API key or try again.";
+      setError(errorMessage);
+      console.error("Generation error:", err);
     } finally {
       setLoading(false);
     }
