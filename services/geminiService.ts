@@ -246,16 +246,12 @@ const getAI = () => {
   throw new Error("AI instance only available in development mode");
 };
 
-// Modify existing lesson blocks based on user prompt
-export const modifyLessonBlocks = async (
+// Modify existing lesson blocks based on user prompt (Development)
+const modifyLessonBlocksDirect = async (
   currentBlocks: any,
   userPrompt: string,
   params: LessonParams
 ): Promise<any> => {
-  if (!isDevelopment) {
-    throw new Error("This feature is only available in development mode");
-  }
-
   const ai = getAI();
   
   const prompt = `
@@ -306,15 +302,54 @@ Return ONLY valid JSON in this exact structure:
   }
 };
 
-// Generate a new page based on user prompt
-export const generateNewPage = async (
+// Modify existing lesson blocks based on user prompt (Production)
+const modifyLessonBlocksViaAPI = async (
+  currentBlocks: any,
+  userPrompt: string,
+  params: LessonParams
+): Promise<any> => {
+  try {
+    const response = await fetch('/api/modify-blocks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ currentBlocks, userPrompt, params }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+      throw new Error(errorData.error || `API request failed with status ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("API Modify Blocks Error:", error);
+    throw error;
+  }
+};
+
+// Export unified function
+export const modifyLessonBlocks = async (
+  currentBlocks: any,
+  userPrompt: string,
+  params: LessonParams
+): Promise<any> => {
+  if (isDevelopment) {
+    console.log("🔧 Development mode: Using direct Gemini API call for modify blocks");
+    return modifyLessonBlocksDirect(currentBlocks, userPrompt, params);
+  } else {
+    console.log("🚀 Production mode: Using API route for modify blocks");
+    return modifyLessonBlocksViaAPI(currentBlocks, userPrompt, params);
+  }
+};
+
+// Generate a new page based on user prompt (Development)
+const generateNewPageDirect = async (
   params: LessonParams,
   userPrompt: string
 ): Promise<{ regional: string; english: string }> => {
-  if (!isDevelopment) {
-    throw new Error("This feature is only available in development mode");
-  }
-
   const ai = getAI();
   
   const prompt = `
@@ -362,17 +397,54 @@ Return ONLY valid JSON:
   }
 };
 
-// Rewrite a specific block with AI assistance
-export const rewriteSpecificBlock = async (
+// Generate a new page based on user prompt (Production)
+const generateNewPageViaAPI = async (
+  params: LessonParams,
+  userPrompt: string
+): Promise<{ regional: string; english: string }> => {
+  try {
+    const response = await fetch('/api/add-page', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ params, userPrompt }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+      throw new Error(errorData.error || `API request failed with status ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("API Add Page Error:", error);
+    throw error;
+  }
+};
+
+// Export unified function
+export const generateNewPage = async (
+  params: LessonParams,
+  userPrompt: string
+): Promise<{ regional: string; english: string }> => {
+  if (isDevelopment) {
+    console.log("🔧 Development mode: Using direct Gemini API call for new page");
+    return generateNewPageDirect(params, userPrompt);
+  } else {
+    console.log("🚀 Production mode: Using API route for new page");
+    return generateNewPageViaAPI(params, userPrompt);
+  }
+};
+
+// Rewrite a specific block with AI assistance (Development)
+const rewriteSpecificBlockDirect = async (
   blockKey: string,
   currentText: string,
   instruction: string,
   params: LessonParams
 ): Promise<string> => {
-  if (!isDevelopment) {
-    throw new Error("This feature is only available in development mode");
-  }
-
   const ai = getAI();
   
   const prompt = `
@@ -408,5 +480,50 @@ Return ONLY the new text, no JSON structure, no extra formatting.
   } catch (error) {
     console.error("Rewrite Block Error:", error);
     throw error;
+  }
+};
+
+// Rewrite a specific block with AI assistance (Production)
+const rewriteSpecificBlockViaAPI = async (
+  blockKey: string,
+  currentText: string,
+  instruction: string,
+  params: LessonParams
+): Promise<string> => {
+  try {
+    const response = await fetch('/api/rewrite-block', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ blockKey, currentText, instruction, params }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+      throw new Error(errorData.error || `API request failed with status ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result.text;
+  } catch (error) {
+    console.error("API Rewrite Block Error:", error);
+    throw error;
+  }
+};
+
+// Export unified function
+export const rewriteSpecificBlock = async (
+  blockKey: string,
+  currentText: string,
+  instruction: string,
+  params: LessonParams
+): Promise<string> => {
+  if (isDevelopment) {
+    console.log("🔧 Development mode: Using direct Gemini API call for block rewrite");
+    return rewriteSpecificBlockDirect(blockKey, currentText, instruction, params);
+  } else {
+    console.log("🚀 Production mode: Using API route for block rewrite");
+    return rewriteSpecificBlockViaAPI(blockKey, currentText, instruction, params);
   }
 };

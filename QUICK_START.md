@@ -72,3 +72,4 @@ VITE_GEMINI_API_KEY=PLACEHOLDER_API_KEY  ← CHANGE THIS!
 
 **That's it!** Once you add your real API key, the app will work perfectly. 🎉
 
+

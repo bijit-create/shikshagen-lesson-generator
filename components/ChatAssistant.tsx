@@ -1,5 +1,13 @@
-import React, { useState } from 'react';
-import { Send, Sparkles, Plus } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, Sparkles, Plus, AlertCircle } from 'lucide-react';
+
+interface ChatMessage {
+  id: string;
+  type: 'user' | 'assistant' | 'error';
+  content: string;
+  mode: 'modify' | 'add';
+  timestamp: Date;
+}
 
 interface ChatAssistantProps {
   isOpen: boolean;
@@ -18,6 +26,13 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({
 }) => {
   const [prompt, setPrompt] = useState('');
   const [mode, setMode] = useState<'modify' | 'add'>('modify');
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   if (!isOpen) return null;
 
@@ -26,12 +41,48 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({
     if (!prompt.trim() || isLoading) return;
 
     const userPrompt = prompt.trim();
+    const currentMode = mode;
     setPrompt('');
 
-    if (mode === 'modify') {
-      await onModifyBlocks(userPrompt);
-    } else {
-      await onAddPage(userPrompt);
+    // Add user message to chat
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      type: 'user',
+      content: userPrompt,
+      mode: currentMode,
+      timestamp: new Date(),
+    };
+    setMessages(prev => [...prev, userMessage]);
+
+    try {
+      // Execute the appropriate action
+      if (currentMode === 'modify') {
+        await onModifyBlocks(userPrompt);
+      } else {
+        await onAddPage(userPrompt);
+      }
+
+      // Add success message
+      const successMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        type: 'assistant',
+        content: currentMode === 'modify' 
+          ? '✓ Content has been modified successfully!' 
+          : '✓ New page has been added successfully!',
+        mode: currentMode,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, successMessage]);
+    } catch (error) {
+      // Add error message
+      const errorMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        type: 'error',
+        content: error instanceof Error ? error.message : 'An error occurred. Please try again.',
+        mode: currentMode,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
     }
   };
 
@@ -43,12 +94,23 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({
           <Sparkles className="w-5 h-5" />
           <h3 className="font-bold text-lg">AI Assistant</h3>
         </div>
-        <button
-          onClick={onClose}
-          className="text-white/80 hover:text-white text-2xl font-bold leading-none"
-        >
-          ×
-        </button>
+        <div className="flex items-center gap-2">
+          {messages.length > 0 && (
+            <button
+              onClick={() => setMessages([])}
+              className="text-white/70 hover:text-white text-xs font-medium px-2 py-1 rounded hover:bg-white/10 transition-colors"
+              title="Clear chat history"
+            >
+              Clear
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="text-white/80 hover:text-white text-2xl font-bold leading-none"
+          >
+            ×
+          </button>
+        </div>
       </div>
 
       {/* Mode Selector */}
@@ -102,19 +164,63 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({
       <div className="flex-1 p-5 overflow-y-auto min-h-[200px] max-h-[300px]">
         <div className="space-y-3">
           {/* Welcome Message */}
-          <div className="bg-gray-100 rounded-lg p-3 text-sm text-gray-700">
-            <p className="font-semibold mb-1">👋 Hello!</p>
-            <p>I can help you modify your lesson or add new pages. Choose a mode above and tell me what you'd like!</p>
-          </div>
+          {messages.length === 0 && (
+            <div className="bg-gray-100 rounded-lg p-3 text-sm text-gray-700">
+              <p className="font-semibold mb-1">👋 Hello!</p>
+              <p>I can help you modify your lesson or add new pages. Choose a mode above and tell me what you'd like!</p>
+            </div>
+          )}
 
+          {/* Conversation History */}
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`rounded-lg p-3 text-sm ${
+                message.type === 'user'
+                  ? 'bg-orange-100 text-gray-800 ml-4'
+                  : message.type === 'error'
+                  ? 'bg-red-50 text-red-700 border border-red-200 mr-4'
+                  : 'bg-green-50 text-green-700 border border-green-200 mr-4'
+              }`}
+            >
+              {message.type === 'user' && (
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-xs uppercase text-orange-600">
+                    {message.mode === 'modify' ? '✨ Modify' : '➕ Add'}:
+                  </span>
+                  <p className="flex-1">{message.content}</p>
+                </div>
+              )}
+              {message.type === 'assistant' && (
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 flex-shrink-0" />
+                  <p>{message.content}</p>
+                </div>
+              )}
+              {message.type === 'error' && (
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="font-semibold mb-1">Error</p>
+                    <p className="text-xs">{message.content}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* Loading Indicator */}
           {isLoading && (
-            <div className="bg-orange-50 rounded-lg p-3 text-sm text-orange-700 border border-orange-200">
+            <div className="bg-orange-50 rounded-lg p-3 text-sm text-orange-700 border border-orange-200 mr-4">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                 <span>AI is working on your request...</span>
               </div>
             </div>
           )}
+          
+          {/* Auto-scroll anchor */}
+          <div ref={chatEndRef} />
         </div>
       </div>
 
@@ -145,4 +251,5 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({
     </div>
   );
 };
+
 

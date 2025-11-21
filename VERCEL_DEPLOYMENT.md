@@ -143,3 +143,4 @@ vercel dev
 - [Vercel Serverless Functions](https://vercel.com/docs/functions/serverless-functions)
 - [Google Gemini API Documentation](https://ai.google.dev/docs)
 
+
