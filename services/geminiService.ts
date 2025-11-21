@@ -236,7 +236,9 @@ const generateLessonViaAPI = async (params: LessonParams): Promise<GeneratedLess
       // Provide more helpful error messages
       let errorMessage = errorData.error || `API request failed with status ${response.status}`;
       
-      if (response.status === 500 && errorData.error?.includes('API Key')) {
+      if (response.status === 413) {
+        errorMessage = 'File too large. PDF files must be under 4 MB. Please compress your PDF or use a smaller file.';
+      } else if (response.status === 500 && errorData.error?.includes('API Key')) {
         errorMessage = 'API Key not configured. Please set GEMINI_API_KEY in Vercel Environment Variables.';
       } else if (errorData.details) {
         errorMessage += ` - ${errorData.details}`;

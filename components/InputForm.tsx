@@ -33,8 +33,22 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      
+      // Validate file type
       if (file.type !== 'application/pdf') {
         alert("Please upload a valid PDF file.");
+        return;
+      }
+      
+      // Validate file size (4MB limit to account for base64 encoding overhead)
+      const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB in bytes
+      if (file.size > MAX_FILE_SIZE) {
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        alert(`File is too large (${fileSizeMB} MB). Maximum file size is 4 MB. Please use a smaller PDF or compress it.`);
+        // Reset the input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
         return;
       }
       
@@ -42,11 +56,21 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => 
       reader.onload = () => {
         const result = reader.result as string;
         const base64Data = result.split(',')[1];
+        
+        // Check base64 size (should be ~33% larger than original)
+        const base64SizeMB = (base64Data.length * 3 / 4 / (1024 * 1024)).toFixed(2);
+        
         setPdfFile({
             name: file.name,
             data: base64Data,
             mimeType: file.type
         });
+      };
+      reader.onerror = () => {
+        alert("Error reading file. Please try again.");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -203,6 +227,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => 
                     <>
                     <Upload className="w-6 h-6 text-gray-400 mb-2" />
                     <p className="text-xs text-gray-500">Upload Chapter PDF</p>
+                    <p className="text-xs text-gray-400 mt-1">Max size: 4 MB</p>
                     <input 
                         ref={fileInputRef}
                         type="file" 

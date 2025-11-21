@@ -137,6 +137,15 @@ export default async function handler(
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Check request size (Vercel limit is ~4.5MB)
+  const contentLength = req.headers['content-length'];
+  if (contentLength && parseInt(contentLength) > 4.5 * 1024 * 1024) {
+    return res.status(413).json({ 
+      error: 'Payload too large',
+      details: 'Request body exceeds 4.5 MB limit. PDF files must be under 4 MB (before base64 encoding).'
+    });
+  }
+
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     
