@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI } from "@google/genai";
+import { MATH_NOTATION_RULES, FORMATTING_EXAMPLES } from './_shared-prompts';
 
 export default async function handler(
   req: VercelRequest,
@@ -57,6 +58,13 @@ Context:
 
 Task: Apply the user's requested changes to the blocks and return the COMPLETE updated blocks structure.
 Maintain all fields, only modify what the user asked for.
+
+${MATH_NOTATION_RULES}
+
+${FORMATTING_EXAMPLES}
+
+**IMPORTANT:** If the content contains any mathematical expressions, fractions, or equations, 
+ensure they are formatted using the proper HTML structures defined above.
 
 Return ONLY valid JSON in this exact structure:
 {

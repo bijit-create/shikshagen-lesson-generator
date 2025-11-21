@@ -1,6 +1,21 @@
 import { GoogleGenAI, Type, Schema, Part } from "@google/genai";
 import { GeneratedLesson, LessonParams } from "../types";
 
+// Math notation rules for consistent formatting
+const MATH_NOTATION_RULES = `
+**MATH NOTATION (CRITICAL - ALWAYS INCLUDE):**
+- Do NOT use LaTeX or external scripts.
+- For Fractions: <span class="fraction"><span class="num">3</span><span class="den">4</span></span>
+- For Algebra: Use <em>x</em>, <var>x</var>
+- For Exponents: Use <sup> (e.g., <var>x</var><sup>2</sup>)
+- For Subscripts: Use <sub> (e.g., H<sub>2</sub>O)
+- For Square Roots: √ with <span class="sqrt">√<span class="radicand">25</span></span>
+- **VERTICAL MATH:** ALWAYS use <table class="vertical-math"> for vertical arithmetic
+- For Inline Math: <span class="expression">2 + 3 = 5</span>
+- Geometry: ∠ (angle), ° (degrees)
+- Comparison: ≥, ≤, ≠, ≈
+`;
+
 const SYSTEM_INSTRUCTION = `
 You are an expert educational content generator for Indian schools. 
 You create short, structured HTML lessons based on Cognitive Load Theory (CLT).
@@ -267,6 +282,11 @@ Context:
 - Subject: ${params.subject}
 - Language: ${params.regionalLanguage}
 
+${MATH_NOTATION_RULES}
+
+**IMPORTANT:** If the content contains any mathematical expressions, fractions, or equations, 
+ensure they are formatted using the proper HTML structures defined above.
+
 Task: Apply the user's requested changes to the blocks and return the COMPLETE updated blocks structure.
 Maintain all fields, only modify what the user asked for.
 
@@ -364,11 +384,15 @@ Lesson Context:
 
 New Page Request: "${userPrompt}"
 
+${MATH_NOTATION_RULES}
+
 Task: Create a COMPLETE, STANDALONE HTML page for this new content.
-- Apply the same styling (Cognitive Load Theory, responsive design, icons)
-- Include full <style> block with all CSS
-- Use appropriate emojis/icons for sections
-- Make it engaging and educational
+- Apply Cognitive Load Theory principles
+- Include full <style> block with ALL CSS (fractions, vertical-math, expressions, cards, etc.)
+- Use appropriate emojis/icons for sections (🎯, 💡, 📝, etc.)
+- Make it engaging and educational for Grade ${params.grade}
+- Ensure responsive design (mobile 320px to desktop 1920px)
+- If content has math, use proper HTML formatting structures
 
 Return ONLY valid JSON:
 {
@@ -459,9 +483,13 @@ Context:
 - Subject: ${params.subject}
 - Language: ${params.regionalLanguage}
 
+${MATH_NOTATION_RULES}
+
 Task: Rewrite ONLY this specific text based on the instruction.
-Keep it appropriate for the grade level and subject.
-Return ONLY the new text, no JSON structure, no extra formatting.
+- Keep it appropriate for Grade ${params.grade} and subject ${params.subject}
+- If the content contains math, use proper HTML formatting (fractions, vertical math, etc.)
+- Maintain the same language (${params.regionalLanguage})
+- Return ONLY the new text, no JSON structure, no extra formatting
   `;
 
   try {

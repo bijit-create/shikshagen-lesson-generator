@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI } from "@google/genai";
+import { MATH_NOTATION_RULES, MANDATORY_CSS, RESPONSIVE_DESIGN_RULES, FORMATTING_EXAMPLES } from './_shared-prompts';
 
 export default async function handler(
   req: VercelRequest,
@@ -55,23 +56,23 @@ Lesson Context:
 New Page Request: "${userPrompt}"
 
 Task: Create a COMPLETE, STANDALONE HTML page for this new content.
-- Apply the same styling (Cognitive Load Theory, responsive design, icons)
-- Include full <style> block with all CSS (including vertical-math, fractions, etc.)
-- Use appropriate emojis/icons for sections
-- Make it engaging and educational
-- Ensure it's responsive for mobile (320px) and desktop
+- Apply Cognitive Load Theory principles
+- Use appropriate emojis/icons for sections (🎯, 💡, 📝, etc.)
+- Make it engaging and educational for Grade ${params.grade}
 
-MANDATORY CSS to include:
-body { font-family: sans-serif; padding: 20px; line-height: 1.6; max-width: 800px; margin: 0 auto; background: #fff; color: #333; }
-.fraction { display: inline-block; text-align: center; vertical-align: middle; margin: 0 5px; font-size: 0.9em; }
-.fraction .num { display: block; border-bottom: 1px solid currentColor; padding: 0 2px; }
-.fraction .den { display: block; padding: 0 2px; }
-.vertical-math { border-collapse: collapse; margin: 1em auto; font-family: 'Courier New', monospace; font-size: 1.4rem; }
-.vertical-math th { text-align: center; padding: 0 12px; color: #666; font-size: 0.7em; font-family: sans-serif; font-weight: normal; vertical-align: bottom; }
-.vertical-math td { text-align: center; padding: 4px 12px; position: relative; }
-.vertical-math tr.result td { border-top: 2px solid #333; font-weight: bold; padding-top: 8px; }
-.card { background: #fff7ed; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ffedd5; }
-h2 { display: flex; align-items: center; color: #c2410c; }
+${MATH_NOTATION_RULES}
+
+${MANDATORY_CSS}
+
+${RESPONSIVE_DESIGN_RULES}
+
+${FORMATTING_EXAMPLES}
+
+**Structure Guidelines:**
+- Use semantic HTML5 elements
+- Include visual section headers with emojis
+- Use cards/containers for organizing content
+- Add interactive elements where appropriate (details/summary for hints)
 
 Return ONLY valid JSON:
 {

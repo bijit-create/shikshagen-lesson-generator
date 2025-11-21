@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenAI } from "@google/genai";
+import { MATH_NOTATION_RULES, FORMATTING_EXAMPLES } from './_shared-prompts';
 
 export default async function handler(
   req: VercelRequest,
@@ -54,9 +55,15 @@ Context:
 - Subject: ${params.subject}
 - Language: ${params.regionalLanguage}
 
+${MATH_NOTATION_RULES}
+
+${FORMATTING_EXAMPLES}
+
 Task: Rewrite ONLY this specific text based on the instruction.
-Keep it appropriate for the grade level and subject.
-Return ONLY the new text, no JSON structure, no extra formatting.
+- Keep it appropriate for Grade ${params.grade} and subject ${params.subject}
+- If the content contains math, use proper HTML formatting (fractions, vertical math, etc.)
+- Maintain the same language (${params.regionalLanguage})
+- Return ONLY the new text, no JSON structure, no extra formatting
     `;
 
     const response = await ai.models.generateContent({

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Notation Demo - ShikshaGen</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      color: #333;
+    }
+
+    h1 {
+      color: #ea580c;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      display: flex;
+      align-items: center;
+      color: #c2410c;
+      border-bottom: 2px solid #fed7aa;
+      padding-bottom: 10px;
+      margin-top: 40px;
+    }
+
+    .section-icon {
+      font-size: 1.5em;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .card {
+      background: #fff7ed;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ffedd5;
+    }
+
+    /* Fraction Styles */
+    .fraction {
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      margin: 0 5px;
+      font-size: 0.9em;
+    }
+    .fraction .num {
+      display: block;
+      border-bottom: 1px solid currentColor;
+      padding: 0 2px;
+    }
+    .fraction .den {
+      display: block;
+      padding: 0 2px;
+    }
+
+    /* Inline Math Expression */
+    .expression {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* Square Root */
+    .sqrt {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    .radicand {
+      border-top: 1px solid currentColor;
+      padding: 0 4px;
+    }
+
+    /* Vertical Math Table Styles */
+    .vertical-math {
+      border-collapse: collapse;
+      margin: 1em auto;
+      font-family: 'Courier New', monospace;
+      font-size: 1.4rem;
+    }
+    .vertical-math th {
+      text-align: center;
+      padding: 0 12px;
+      color: #666;
+      font-size: 0.7em;
+      font-family: sans-serif;
+      font-weight: normal;
+      vertical-align: bottom;
+    }
+    .vertical-math td {
+      text-align: center;
+      padding: 4px 12px;
+      position: relative;
+    }
+    .vertical-math tr.result td {
+      border-top: 2px solid #333;
+      font-weight: bold;
+      padding-top: 8px;
+    }
+
+    .demo-box {
+      background: #e0f2fe;
+      padding: 15px;
+      border-left: 4px solid #0284c7;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+
+    .code {
+      background: #1f2937;
+      color: #10b981;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      overflow-x: auto;
+      margin-top: 5px;
+    }
+
+    details {
+      margin: 10px 0;
+      padding: 10px;
+      background: #f9fafb;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid #e5e7eb;
+    }
+    summary {
+      font-weight: bold;
+      color: #d97706;
+      outline: none;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 10px; }
+      .vertical-math { font-size: 1.1rem; }
+      .vertical-math td { padding: 3px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>🔢 ShikshaGen Math Notation Demo</h1>
+  
+  <div class="card">
+    <p><strong>This page demonstrates all supported mathematical notation in ShikshaGen.</strong></p>
+    <p>All examples use pure HTML and CSS - no LaTeX or external libraries required!</p>
+  </div>
+
+  <h2><span class="section-icon">📊</span> 1. Fractions</h2>
+  
+  <div class="demo-box">
+    <p><strong>Example:</strong> Simple fraction: <span class="fraction"><span class="num">3</span><span class="den">4</span></span></p>
+    <details>
+      <summary>Show HTML Code</summary>
+      <div class="code">&lt;span class="fraction"&gt;&lt;span class="num"&gt;3&lt;/span&gt;&lt;span class="den"&gt;4&lt;/span&gt;&lt;/span&gt;</div>
+    </details>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Example:</strong> Mixed number: 2 <span class="fraction"><span class="num">1</span><span class="den">2</span></span> hours</p>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Example:</strong> Fraction addition: <span class="fraction"><span class="num">1</span><span class="den">4</span></span> + <span class="fraction"><span class="num">2</span><span class="den">4</span></span> = <span class="fraction"><span class="num">3</span><span class="den">4</span></span></p>
+  </div>
+
+  <h2><span class="section-icon">🔤</span> 2. Algebra & Variables</h2>
+  
+  <div class="demo-box">
+    <p><strong>Example:</strong> Solve for <var>x</var>: 2<var>x</var> + 5 = 15</p>
+    <details>
+      <summary>Show HTML Code</summary>
+      <div class="code">&lt;var&gt;x&lt;/var&gt; or &lt;em&gt;x&lt;/em&gt;</div>
+    </details>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Example:</strong> Quadratic equation: <var>x</var><sup>2</sup> + 3<var>x</var> + 2 = 0</p>
+    <details>
+      <summary>Show HTML Code</summary>
+      <div class="code">&lt;var&gt;x&lt;/var&gt;&lt;sup&gt;2&lt;/sup&gt;</div>
+    </details>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Example:</strong> Area formula: <var>A</var> = <var>π</var><var>r</var><sup>2</sup></p>
+  </div>
+
+  <h2><span class="section-icon">➕</span> 3. Vertical Arithmetic</h2>
+  
+  <div class="demo-box">
+    <p><strong>Example:</strong> Vertical Addition</p>
+    <table class="vertical-math">
+      <thead>
+        <tr>
+          <th></th>
+          <th>H</th>
+          <th>T</th>
+          <th>O</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>2</td>
+          <td>4</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td>+</td>
+          <td>1</td>
+          <td>3</td>
+          <td>7</td>
+        </tr>
+        <tr class="result">
+          <td></td>
+          <td>3</td>
+          <td>8</td>
+          <td>2</td>
+        </tr>
+      </tbody>
+    </table>
+    <details>
+      <summary>Show HTML Code</summary>
+      <div class="code">
+&lt;table class="vertical-math"&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;H&lt;/th&gt;&lt;th&gt;T&lt;/th&gt;&lt;th&gt;O&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;4&lt;/td&gt;&lt;td&gt;5&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;+&lt;/td&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;7&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr class="result"&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;8&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+      </div>
+    </details>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Example:</strong> Vertical Subtraction</p>
+    <table class="vertical-math">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Th</th>
+          <th>H</th>
+          <th>T</th>
+          <th>O</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>5</td>
+          <td>4</td>
+          <td>3</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>-</td>
+          <td>2</td>
+          <td>1</td>
+          <td>5</td>
+          <td>8</td>
+        </tr>
+        <tr class="result">
+          <td></td>
+          <td>3</td>
+          <td>2</td>
+          <td>7</td>
+          <td>4</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Example:</strong> Vertical Multiplication</p>
+    <table class="vertical-math">
+      <thead>
+        <tr>
+          <th></th>
+          <th>H</th>
+          <th>T</th>
+          <th>O</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td>×</td>
+          <td></td>
+          <td></td>
+          <td>3</td>
+        </tr>
+        <tr class="result">
+          <td></td>
+          <td>7</td>
+          <td>0</td>
+          <td>2</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2><span class="section-icon">√</span> 4. Square Roots & Radicals</h2>
+  
+  <div class="demo-box">
+    <p><strong>Example:</strong> <span class="sqrt">√<span class="radicand">25</span></span> = 5</p>
+    <details>
+      <summary>Show HTML Code</summary>
+      <div class="code">&lt;span class="sqrt"&gt;√&lt;span class="radicand"&gt;25&lt;/span&gt;&lt;/span&gt;</div>
+    </details>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Example:</strong> Pythagorean theorem: <var>c</var> = <span class="sqrt">√<span class="radicand"><var>a</var><sup>2</sup> + <var>b</var><sup>2</sup></span></span></p>
+  </div>
+
+  <h2><span class="section-icon">📐</span> 5. Geometry</h2>
+  
+  <div class="demo-box">
+    <p><strong>Example:</strong> Angle: ∠ABC = 90°</p>
+    <details>
+      <summary>Show HTML Code</summary>
+      <div class="code">Use Unicode: ∠ for angle, ° for degrees</div>
+    </details>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Example:</strong> Triangle angles: ∠A + ∠B + ∠C = 180°</p>
+  </div>
+
+  <h2><span class="section-icon">⚗️</span> 6. Chemistry (Subscripts)</h2>
+  
+  <div class="demo-box">
+    <p><strong>Example:</strong> Water molecule: H<sub>2</sub>O</p>
+    <details>
+      <summary>Show HTML Code</summary>
+      <div class="code">&lt;sub&gt;2&lt;/sub&gt;</div>
+    </details>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Example:</strong> Photosynthesis: 6CO<sub>2</sub> + 6H<sub>2</sub>O → C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> + 6O<sub>2</sub></p>
+  </div>
+
+  <h2><span class="section-icon">≠</span> 7. Comparison Operators</h2>
+  
+  <div class="demo-box">
+    <p><strong>Greater than or equal:</strong> <var>x</var> ≥ 5</p>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Less than or equal:</strong> <var>y</var> ≤ 10</p>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Not equal:</strong> <var>a</var> ≠ <var>b</var></p>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Approximately equal:</strong> π ≈ 3.14</p>
+  </div>
+
+  <h2><span class="section-icon">📦</span> 8. Inline Expressions</h2>
+  
+  <div class="demo-box">
+    <p><strong>Example:</strong> Calculate <span class="expression">5 + 3 × 2</span></p>
+    <details>
+      <summary>Show HTML Code</summary>
+      <div class="code">&lt;span class="expression"&gt;5 + 3 × 2&lt;/span&gt;</div>
+    </details>
+  </div>
+
+  <div class="demo-box">
+    <p><strong>Example:</strong> Answer: <span class="expression">5 + 3 × 2 = 11</span></p>
+  </div>
+
+  <h2><span class="section-icon">🎯</span> 9. Complex Example</h2>
+  
+  <div class="card">
+    <h3>Problem: Solve for <var>x</var></h3>
+    <p>Given the equation: <span class="expression"><span class="fraction"><span class="num"><var>x</var></span><span class="den">4</span></span> + 5 = 8</span></p>
+    
+    <details>
+      <summary>Solution Steps</summary>
+      <p><strong>Step 1:</strong> Subtract 5 from both sides</p>
+      <p><span class="expression"><span class="fraction"><span class="num"><var>x</var></span><span class="den">4</span></span> = 3</span></p>
+      
+      <p><strong>Step 2:</strong> Multiply both sides by 4</p>
+      <p><span class="expression"><var>x</var> = 12</span></p>
+      
+      <p><strong>Answer:</strong> <var>x</var> = 12 ✓</p>
+    </details>
+  </div>
+
+  <h2><span class="section-icon">💡</span> Best Practices</h2>
+  
+  <div class="card">
+    <ul>
+      <li>✅ Always use <code>class="vertical-math"</code> for vertical arithmetic</li>
+      <li>✅ Always include the complete CSS in your HTML pages</li>
+      <li>✅ Use proper semantic HTML (<code>&lt;var&gt;</code>, <code>&lt;sup&gt;</code>, <code>&lt;sub&gt;</code>)</li>
+      <li>✅ Test on mobile (320px) and desktop (1920px) screens</li>
+      <li>❌ Never use spaces or <code>&lt;pre&gt;</code> for vertical math alignment</li>
+      <li>❌ Never use LaTeX or external math libraries</li>
+      <li>❌ Never hardcode images for simple math symbols</li>
+    </ul>
+  </div>
+
+  <div class="card" style="background: #d1fae5; border-color: #86efac;">
+    <p style="text-align: center; font-size: 1.1em; color: #065f46;">
+      <strong>🎉 All these notations work perfectly in ShikshaGen!</strong>
+    </p>
+    <p style="text-align: center; color: #047857;">
+      The AI will automatically use these HTML structures when generating math content.
+    </p>
+  </div>
+
+</body>
+</html>
+
